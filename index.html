@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRIKAYA.EG — كود تفاعلي متغير</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      margin: 0;
+      background: #0d1117;
+      color: #f0f6fc;
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px 18px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .logo {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: #10b981; color: #052e16;
+      font-weight: 800; display: grid; place-items: center; font-size: 18px;
+    }
+    .nav-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      cursor: pointer; border: none; border-radius: 10px;
+      padding: 10px 14px; font-weight: 700; font-size: 14px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    button:active { transform: scale(0.98); }
+    button:hover { opacity: 0.92; }
+    .btn-primary { background: #10b981; color: #052e16; }
+    .btn-secondary { background: #21262d; color: #f0f6fc; border: 1px solid #30363d; }
+    .container { max-width: 720px; margin: 24px auto; padding: 0 16px; }
+    .card {
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 16px; padding: 20px; margin-bottom: 16px;
+    }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    p.muted { color: #8b949e; margin: 0 0 16px; line-height: 1.6; }
+    .steps-grid { display: grid; gap: 10px; margin: 16px 0; }
+    .step-box {
+      background: #0d1117; border: 1px solid #21262d;
+      border-radius: 12px; padding: 12px 14px;
+    }
+    .step-box strong { color: #34d399; display: block; margin-bottom: 4px; }
+    label { display: block; margin: 12px 0 6px; font-size: 14px; color: #c9d1d9; }
+    input, select, textarea {
+      width: 100%; padding: 11px 12px; border-radius: 10px;
+      border: 1px solid #30363d; background: #0d1117; color: #f0f6fc;
+      font-size: 14px;
+    }
+    .row-inline { display: flex; gap: 10px; margin-top: 10px; }
+    .row-inline input { flex: 1; margin: 0; }
+    .msg {
+      margin-top: 12px; padding: 12px; border-radius: 10px;
+      background: #0d1117; border: 1px solid #30363d; font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .hidden { display: none; }
+    #qrBox {
+      margin-top: 16px; display: flex; flex-direction: column;
+      align-items: center; gap: 10px; background: #ffffff;
+      color: #111827; padding: 16px; border-radius: 12px;
+    }
+    .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15); color: #34d399;
+      font-size: 12px; font-weight: 700; margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand" onclick="showSection('home')" style="cursor:pointer;">
+      <div class="logo">T</div>
+      <div>
+        <div style="font-weight:800;">TRIKAYA.EG</div>
+        <div style="font-size:12px;color:#8b949e;">كود تفاعلي متغير</div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-secondary" id="navActivateBtn" type="button">تفعيل / تعديل كود</button>
+      <button class="btn-primary" id="navAdminBtn" type="button">إدارة البراند</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- الصفحة الرئيسية -->
+    <section id="sec-home" class="card">
+      <span class="badge">TRIKAYA.EG</span>
+      <h1>تيشرت بكود واحد.. يفتح أي حاجة أنت عايزها</h1>
+      <p class="muted">
+        كل تيشرت من TRIKAYA.EG عليه كود مربوط بموقعك. صاحب التيشرت يقدر يغير اللينك أو الرسالة في أي وقت من موبايله والكود يفتح على الجديد فوراً.
+      </p>
+
+      <div class="steps-grid">
+        <div class="step-box">
+          <strong>1. ولّد كود</strong>
+          من لوحة إدارة البراند اعمل كود جديد واطبع الـ QR على التيشرت.
+        </div>
+        <div class="step-box">
+          <strong>2. فعّل وربط</strong>
+          العميل يفعّل الكود بالـ PIN ويربطه بلينك إنستجرام، أغنية، أو رسالة.
+        </div>
+        <div class="step-box">
+          <strong>3. غيّر براحتك</strong>
+          أنت أو العميل تقدروا تغيروا الوجهة في أي لحظة بدون طباعة جديدة.
+        </div>
+      </div>
+
+      <label for="lookupCode">جرّب فتح كود تيشرت الآن:</label>
+      <div class="row-inline">
+        <input id="lookupCode" type="text" placeholder="مثال: TRK-101" />
+        <button class="btn-primary" id="openCodeBtn" type="button">افتح</button>
+      </div>
+      <div id="lookupResult" class="msg hidden"></div>
+    </section>
+
+    <!-- تفعيل / تعديل كود -->
+    <section id="sec-activate" class="card hidden">
+      <button class="btn-secondary" id="backFromActivate" type="button" style="margin-bottom:14px;">← رجوع</button>
+      <h2>تفعيل أو تعديل كود تيشرت</h2>
+      <label for="actCode">كود التيشرت</label>
+      <input id="actCode" type="text" placeholder="مثال: TRK-101" />
+
+      <label for="actPin">رمز PIN الخاص بالكود</label>
+      <input id="actPin" type="text" placeholder="مثال: 4829" />
+
+      <label for="actType">نوع الوجهة</label>
+      <select id="actType">
+        <option value="url">رابط (إنستجرام / تيك توك / يوتيوب / موقع)</option>
+        <option value="text">رسالة نصية</option>
+      </select>
+
+      <label for="actTarget">الرابط أو الرسالة</label>
+      <textarea id="actTarget" rows="3" placeholder="https://instagram.com/username أو اكتب رسالتك هنا"></textarea>
+
+      <button class="btn-primary" id="saveCodeBtn" type="button" style="margin-top:14px;width:100%;">
+        حفظ وتفعيل التعديلات فوراً
+      </button>
+      <div id="activateMsg" class="msg hidden"></div>
+    </section>
+
+    <!-- إدارة البراند -->
+    <section id="sec-admin" class="card hidden">
+      <button class="btn-secondary" id="backFromAdmin" type="button" style="margin-bottom:14px;">← رجوع</button>
+      <h2>إدارة البراند</h2>
+
+      <div id="adminLockBox">
+        <label for="adminPass">أدخل رمز المرور</label>
+        <div class="row-inline">
+          <input id="adminPass" type="password" placeholder="رمز المرور" />
+          <button class="btn-primary" id="unlockAdminBtn" type="button">دخول</button>
+        </div>
+        <div id="adminLockMsg" class="msg hidden"></div>
+      </div>
+
+      <div id="adminPanelBox" class="hidden">
+        <p class="muted">تم فتح لوحة الإدارة. ولّد كوداً جديداً مع رمز PIN و QR Code:</p>
+        <button class="btn-primary" id="genCodeBtn" type="button" style="width:100%;">
+          توليد كود + QR Code
+        </button>
+        <div id="genMsg" class="msg hidden"></div>
+        <div id="qrBox" class="hidden">
+          <div id="qrCanvas"></div>
+          <div id="qrCaption" style="font-weight:700;font-size:13px;text-align:center;"></div>
+          <button class="btn-secondary" id="downloadQrBtn" type="button">تحميل صورة QR</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://gqwyzydsrmzxxsaxtpft.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_RikpowZT2iHP5RhytQy7_A_YJkH85Z4";
+    const ADMIN_PASSCODE = "2026";
+
+    const sb = window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+      : null;
+
+    function showSection(name) {
+      document.getElementById("sec-home").classList.toggle("hidden", name !== "home");
+      document.getElementById("sec-activate").classList.toggle("hidden", name !== "activate");
+      document.getElementById("sec-admin").classList.toggle("hidden", name !== "admin");
+    }
+
+    function showMsg(elId, text) {
+      const el = document.getElementById(elId);
+      el.textContent = text;
+      el.classList.remove("hidden");
+    }
+
+    document.getElementById("navActivateBtn").addEventListener("click", () => showSection("activate"));
+    document.getElementById("navAdminBtn").addEventListener("click", () => showSection("admin"));
+    document.getElementById("backFromActivate").addEventListener("click", () => showSection("home"));
+    document.getElementById("backFromAdmin").addEventListener("click", () => showSection("home"));
+
+    document.getElementById("unlockAdminBtn").addEventListener("click", () => {
+      const pass = document.getElementById("adminPass").value.trim();
+      if (pass === ADMIN_PASSCODE) {
+        document.getElementById("adminLockBox").classList.add("hidden");
+        document.getElementById("adminPanelBox").classList.remove("hidden");
+      } else {
+        showMsg("adminLockMsg", "رمز المرور غير صحيح.");
+      }
+    });
+
+    document.getElementById("genCodeBtn").addEventListener("click", async () => {
+      const randNum = Math.floor(100 + Math.random() * 900);
+      const code = "TRK-" + randNum;
+      const pin = String(Math.floor(1000 + Math.random() * 9000));
+
+      showMsg("genMsg", "جاري توليد الكود...");
+
+      if (sb) {
+        const { error } = await sb.from("shirts").insert([{
+          code,
+          pin,
+          dest_type: "text",
+          target: "كود تيشرت جديد جاهز للتفعيل من TRIKAYA.EG",
+          scans: 0
+        }]);
+        if (error) {
+          showMsg("genMsg", "تم إنشاء الكود محلياً لكن راجع قاعدة البيانات: " + error.message);
+        } else {
+          showMsg("genMsg", `تم إنشاء الكود بنجاح!\nالكود: ${code}\nرمز PIN: ${pin}`);
+        }
+      } else {
+        showMsg("genMsg", `تم إنشاء الكود:\nالكود: ${code}\nرمز PIN: ${pin}`);
+      }
+
+      const qrContainer = document.getElementById("qrCanvas");
+      qrContainer.innerHTML = "";
+      const targetUrl = `${window.location.origin}${window.location.pathname}?code=${encodeURIComponent(code)}`;
+      new QRCode(qrContainer, { text: targetUrl, width: 170, height: 170 });
+      document.getElementById("qrCaption").textContent = `${code} | PIN: ${pin}`;
+      document.getElementById("qrBox").classList.remove("hidden");
+    });
+
+    document.getElementById("downloadQrBtn").addEventListener("click", () => {
+      const img = document.querySelector("#qrCanvas img") || document.querySelector("#qrCanvas canvas");
+      if (!img) return;
+      const src = img.tagName === "IMG" ? img.src : img.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = src;
+      a.download = "trikaya-qr.png";
+      a.click();
+    });
+
+    document.getElementById("saveCodeBtn").addEventListener("click", async () => {
+      const code = document.getElementById("actCode").value.trim().toUpperCase();
+      const pin = document.getElementById("actPin").value.trim();
+      const destType = document.getElementById("actType").value;
+      const target = document.getElementById("actTarget").value.trim();
+
+      if (!code || !pin || !target) {
+        showMsg("activateMsg", "من فضلك املأ الكود، رمز PIN، والرابط أو الرسالة.");
+        return;
+      }
+      if (!sb) {
+        showMsg("activateMsg", "تعذر الاتصال بقاعدة البيانات.");
+        return;
+      }
+
+      const { data, error: selErr } = await sb
+        .from("shirts")
+        .select("*")
+        .eq("code", code)
+        .eq("pin", pin)
+        .maybeSingle();
+
+      if (selErr || !data) {
+        showMsg("activateMsg", "الكود أو رمز PIN غير صحيح.");
+        return;
+      }
+
+      const { error: updErr } = await sb
+        .from("shirts")
+        .update({ dest_type: destType, target })
+        .eq("code", code);
+
+      if (updErr) {
+        showMsg("activateMsg", "حدث خطأ أثناء الحفظ: " + updErr.message);
+      } else {
+        showMsg("activateMsg", "تم حفظ وتفعيل الكود بنجاح!");
+      }
+    });
+
+    async function lookupShirtCode(rawCode) {
+      const code = (rawCode || "").trim().toUpperCase();
+      if (!code) {
+        showMsg("lookupResult", "اكتب كود التيشرت أولاً.");
+        return;
+      }
+      if (!sb) {
+        showMsg("lookupResult", "تعذر الاتصال بقاعدة البيانات.");
+        return;
+      }
+
+      const { data, error } = await sb
+        .from("shirts")
+        .select("*")
+        .eq("code", code)
+        .maybeSingle();
+
+      if (error || !data) {
+        showMsg("lookupResult", "لم يتم العثور على هذا الكود.");
+        return;
+      }
+
+      const nextScans = (data.scans || 0) + 1;
+      await sb.from("shirts").update({ scans: nextScans }).eq("code", code);
+
+      if (data.dest_type === "url" && data.target) {
+        const cleanUrl = data.target.startsWith("http") ? data.target : "https://" + data.target;
+        window.location.href = cleanUrl;
+      } else {
+        showMsg("lookupResult", `الرسالة: ${data.target || ""}\nعدد مرات المسح: ${nextScans}`);
+      }
+    }
+
+    document.getElementById("openCodeBtn").addEventListener("click", () => {
+      lookupShirtCode(document.getElementById("lookupCode").value);
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("code")) {
+      document.getElementById("lookupCode").value = params.get("code");
+      lookupShirtCode(params.get("code"));
+    }
+  </script>
+</body>
+</html>
